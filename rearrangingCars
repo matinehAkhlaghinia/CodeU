@@ -1,0 +1,42 @@
+#include <iostream>
+
+
+using namespace std;
+
+
+
+map<int, int> setPositions(int[] arrangements, int N) {
+	map<int , int> positions;
+	for(int carPos = 0; carPos < N; carPos++) {
+		positions[arrangements[carPos]] = carPos;
+	}
+	return positions;
+}
+
+
+void putCarInPlace(map<int, int> &currentPositions, map<int, int> &moves, int carNum1, int carNum2) {
+	int zeroPos = currentPositions[0];
+	int carNum1Pos = currentPositions[carNum1];
+	int carNum2Pos = currentPositions[carNum2];
+	currentPositions[carNum1] = zeroPos;
+	currentPositions[0] = carNum2Pos;
+	currentPositions[carNum2] = carNum1Pos;
+	move[carNum1Pos] = zeroPos;
+	move[carNum2Pos] = carNum1Pos;
+
+}
+
+
+map<int , int> rearrangeCars(int N, int[] currentArrangement, int[] finalArrangement) {
+	map<int, int> currentPositions = setPositions(currentArrangement, N);
+	map<int, int> moves;
+	for(int carPos = 0; carPos < N; carPos++) {
+		if(currentArrangement[carPos] == finalArrangement[carPos])
+			continue;
+		else {
+			putCarInPlace(currentPositions, moves, currentArrangement[carPos], finalArrangement[carPos]);
+		}
+	}
+	return moves;
+}
+
