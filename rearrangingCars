@@ -1,12 +1,20 @@
 #include <iostream>
+#include <unordered_map>
+#include <utility>  
+#include <vector>
 
 
 using namespace std;
 
 
+void printMoves(vector<pair<int, int> > moves) {
+	for(auto it = moves.begin(); it != moves.end(); it++) {
+		cout << "Move from " << it->first << " to" << it->second << endl;
+	}
+}
 
-map<int, int> setPositions(int[] arrangements, int N) {
-	map<int , int> positions;
+unordered_map<int, int> setPositions(int arrangements[], int N) {
+	unordered_map<int , int> positions;
 	for(int carPos = 0; carPos < N; carPos++) {
 		positions[arrangements[carPos]] = carPos;
 	}
@@ -14,24 +22,31 @@ map<int, int> setPositions(int[] arrangements, int N) {
 }
 
 
-void putCarInPlace(map<int, int> &currentPositions, map<int, int> &moves, int carNum1, int carNum2) {
+void putCarInPlace(unordered_map<int, int> &currentPositions, vector<pair<int, int> > &moves, int carNum1, int carNum2) {
 	int zeroPos = currentPositions[0];
 	int carNum1Pos = currentPositions[carNum1];
 	int carNum2Pos = currentPositions[carNum2];
-	currentPositions[carNum1] = zeroPos;
-	currentPositions[0] = carNum2Pos;
-	currentPositions[carNum2] = carNum1Pos;
-	move[carNum1Pos] = zeroPos;
-	move[carNum2Pos] = carNum1Pos;
+	if(carNum1 == 0) {
+		currentPositions[0] = carNum2Pos;
+		currentPositions[carNum2] = zeroPos;
+		moves.push_back(make_pair(carNum2Pos, zeroPos));
+	}
+	else {
+		currentPositions[carNum1] = zeroPos;
+		currentPositions[0] = carNum2Pos;
+		currentPositions[carNum2] = carNum1Pos;
+		moves.push_back(make_pair(carNum1Pos, zeroPos));
+		moves.push_back(make_pair(carNum2Pos, carNum1Pos));
+	}
 
 }
 
 
-map<int , int> rearrangeCars(int N, int[] currentArrangement, int[] finalArrangement) {
-	map<int, int> currentPositions = setPositions(currentArrangement, N);
-	map<int, int> moves;
+vector<pair<int, int> > rearrangeCars(int N, int currentArrangement[], int finalArrangement[]) {
+	unordered_map<int, int> currentPositions = setPositions(currentArrangement, N);
+	vector<pair<int, int> > moves;
 	for(int carPos = 0; carPos < N; carPos++) {
-		if(currentArrangement[carPos] == finalArrangement[carPos])
+		if(currentPositions[carPos] == finalArrangement[carPos])
 			continue;
 		else {
 			putCarInPlace(currentPositions, moves, currentArrangement[carPos], finalArrangement[carPos]);
@@ -39,4 +54,15 @@ map<int , int> rearrangeCars(int N, int[] currentArrangement, int[] finalArrange
 	}
 	return moves;
 }
+
+
+int main() {
+	int arr1[4] = {1, 2, 0, 3};
+	int arr2[4] = {3, 1, 2, 0};
+	vector<pair<int, int> > moves = rearrangeCars(4, arr1, arr2);
+	printMoves(moves);
+}
+
+
+
 
